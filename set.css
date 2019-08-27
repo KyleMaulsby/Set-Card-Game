@@ -1,0 +1,38 @@
+body{
+    margin:0;
+    background: black;
+}
+.col-4{
+    display: flex;
+    flex-wrap: wrap;
+    margin:5px;
+    width: 200px;
+    /*max-height: calc(20% - 22px);*/
+    /*min-height: calc(20% - 22px);*/
+    height: 115px;
+    border:black solid 3px;
+    background: white;
+    border-radius:15px;
+}
+.table{
+    margin: auto;
+    display:flex;
+    flex-wrap: wrap;
+    width: 50%;
+    height: 90vh;
+    /*background: green;*/
+}
+.card:hover{
+    cursor: pointer;
+}
+.img{
+    /*display:flex;*/
+    /*flex-wrap: wrap;*/
+    margin:auto;
+}
+.hint{
+    box-shadow: 1px 1px 15px blue, -1px -1px 15px blue;
+}
+.selected{
+    box-shadow: 1px 1px 15px lightyellow, -1px -1px 15px lightyellow;
+}
