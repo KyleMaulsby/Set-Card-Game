@@ -112,7 +112,7 @@ const hint = function(){
                 for (let c = 0; c < board.length; c++) {
                     if (isMatch([board[a], board[b], board[c]]) && (board[a] !== board[b]) && (board[a] !== board[c]) && (board[b] !== board[c])) {
                         hintarr = [board[a], board[b], board[c]];
-                        let id= "#"+hintarr[hintcount].attr("id");
+                        let id = "#"+hintarr[hintcount].attr("id");
                         $(id).addClass("hint");
                         hintcount++;
                         return  null;
@@ -148,27 +148,26 @@ $("#table").on("click",".card",function(){
         if(selected.length === 3){
             setTimeout(function(){
                 if(isMatch(selected)){
-                    console.log("selected");
-                    console.log(selected);
-                    console.log(board);
                     selected.forEach(function(obj){
-                        console.log(board.indexOf(obj));
                         if(board.length > 12) {
                             obj.remove();
-                            board.splice(board.indexOf(obj),1);
                         }else{
-                            console.log(obj);
                             obj.replaceWith(drawCard(Deck));
-
                         }
+                        board.forEach(function(card){
+                            if(card.attr('id') === obj.attr('id')){
+                                board.splice(board.indexOf(card),1);
+                            }
+                        });
                     });
                     selected = [];
                     hintarr = [];
+                    hintcount = 0;
+
                 }else{
                     selected = [];
                 }
                 $(".card").removeClass("selected");
-                $(".card").removeClass("hint");
             },250);
         }
     }
