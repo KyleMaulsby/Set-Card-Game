@@ -1,18 +1,19 @@
+'use strict';
+(function(){
 const color = ["Red","Green","Purple"];
 const fill = ["E","H","F"];
 const amount = ["1","2","3"];
 const shape = ["D","S","O"];
-
 
 const path =["M25 0 L50 50 L25 100 L0 50 Z",
     "M38.4,63.4c0,16.1,11,19.9,10.6,28.3c-0.5,9.2-21.1,12.2-33.4,3.8s-15.8-21.2-9.3-38c3.7-7.5,4.9-14,4.8-20 c0-16.1-11-19.9-10.6-28.3C1,0.1,21.6-3,33.9,5.5s15.8,21.2,9.3,38C40.4,50.6,38.5,57.4,38.4,63.4z",
     "M25,99.5C14.2,99.5,5.5,90.8,5.5,80V20C5.5,9.2,14.2,0.5,25,0.5S44.5,9.2,44.5,20v60 C44.5,90.8,35.8,99.5,25,99.5z"];
 
 let cards = [];
-for(c=0;c<3;c++) {
-    for (f = 0; f < 3; f++) {
-        for (a = 0; a < 3; a++) {
-            for (s = 0; s < 3; s++) {
+for(let c=0;c<3;c++) {
+    for (let f = 0; f < 3; f++) {
+        for (let a = 0; a < 3; a++) {
+            for (let s = 0; s < 3; s++) {
                 let obj = {
                     color: "",
                     fill: "",
@@ -73,7 +74,6 @@ const makeBoard = function(){
     }
 };
 const isMatch = function(set){
-    console.log(set);
     let data = [[],[],[],[]];
     set.forEach(function(type) {
         data[0].push(type.data("color"));
@@ -81,7 +81,6 @@ const isMatch = function(set){
         data[2].push(type.data("amount"));
         data[3].push(type.data("shape"));
     });
-    console.log(data);
     let sameOrDiff = true;
     data.forEach(function(type) {
         if (type[0] === type[1] && type[0] === type[2]) {
@@ -90,8 +89,33 @@ const isMatch = function(set){
             sameOrDiff = false;
         }
     });
-    console.log(sameOrDiff);
     return sameOrDiff;
+};
+
+const testSet = function(){
+    setTimeout(function(){
+        if(isMatch(selected)){
+            selected.forEach(function(obj){
+                if(board.length > 12) {
+                    obj.remove();
+                }else{
+                    obj.replaceWith(drawCard(Deck));
+                }
+                board.forEach(function(card){
+                    if(card.attr('id') === obj.attr('id')){
+                        board.splice(board.indexOf(card),1);
+                    }
+                });
+            });
+            selected = [];
+            hintarr = [];
+            hintcount = 0;
+
+        }else{
+            selected = [];
+        }
+        $(".card").removeClass("selected");
+    },250);
 };
 const draw3 = function(deck){
     if(board.length<15) {
@@ -103,6 +127,7 @@ const draw3 = function(deck){
 $("#add3").on("click",function(){
     draw3(Deck);
 });
+
 let hintarr = [];
 let hintcount = 0;
 const hint = function(){
@@ -119,6 +144,9 @@ const hint = function(){
                     }
                 }
             }
+        }
+        if(hintarr.length ===0){
+            draw3(Deck);
         }
     }else{
         if(hintcount > 2){
@@ -146,64 +174,9 @@ $("#table").on("click",".card",function(){
         card.toggleClass("selected");
         selected.push(card);
         if(selected.length === 3){
-            setTimeout(function(){
-                if(isMatch(selected)){
-                    selected.forEach(function(obj){
-                        if(board.length > 12) {
-                            obj.remove();
-                        }else{
-                            obj.replaceWith(drawCard(Deck));
-                        }
-                        board.forEach(function(card){
-                            if(card.attr('id') === obj.attr('id')){
-                                board.splice(board.indexOf(card),1);
-                            }
-                        });
-                    });
-                    selected = [];
-                    hintarr = [];
-                    hintcount = 0;
-
-                }else{
-                    selected = [];
-                }
-                $(".card").removeClass("selected");
-            },250);
+            testSet();
         }
     }
 });
 
-
-
-
-
-
-
-
-// test math
-
-let arrPart = function(arr){
-    let newArr = [];
-    for (let i = 1; i < arr.length; i++) {
-        let copy = arr.slice();
-        let segment = copy.splice(0, i);
-        newArr.push([segment, copy]);
-    }
-    return newArr;
-};
-//  a(n + 1) = 1 + a(n + 1 – a(a(n)))
-let calcGol = function(num){
-    if(num>1) {
-        return (1 + calcGol((num - 1) + 1 - calcGol(calcGol(num - 1))));
-    }else {
-        return 1;
-    }
-};
-let makeGolArr = function(num){
-    let gArr = [];
-    for(let i=1;i<=num;i++){
-            let nxtNum = calcGol(i);
-            gArr.push(nxtNum);
-        }
-    return gArr;
-};
+})();
