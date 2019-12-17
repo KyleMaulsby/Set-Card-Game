@@ -1,5 +1,5 @@
 'use strict';
-(function(){
+//(function(){
 const color = ["Red","Green","Purple"];
 const fill = ["E","H","F"];
 const amount = ["1","2","3"];
@@ -10,6 +10,7 @@ const path =["M25 0 L50 50 L25 100 L0 50 Z",
     "M25,99.5C14.2,99.5,5.5,90.8,5.5,80V20C5.5,9.2,14.2,0.5,25,0.5S44.5,9.2,44.5,20v60 C44.5,90.8,35.8,99.5,25,99.5z"];
 
 let cards = [];
+// Builds the deck
 for(let c=0;c<3;c++) {
     for (let f = 0; f < 3; f++) {
         for (let a = 0; a < 3; a++) {
@@ -32,18 +33,23 @@ for(let c=0;c<3;c++) {
     }
 }
 let Deck = [];
+// shuffles the cards into a random sequence in the array
 const shuffleDeck = function(cards){
     Deck = [];
+    // pushes a card from cards array to the deck array in a random order
     for(let i=81;i>0;i--){
         let rand = Math.floor(Math.random()*i);
+        //removes card from card array as to not make duplicates
         let card = cards.splice(rand,1);
         Deck.push(card[0]);
     }
 };
 const drawCard = function(deck){
+// "draws" top most card
     let card = deck[0];
     deck.splice(0,1);
     let data = "";
+    // loop to build the svg img depending on how many shapes are on the card
     for(let i=0;i<card.amount;i++) {
         data += '<svg viewbox="-2 -2 54 104" class="img" height="100" width="50"  stroke="' + card.color + '" stroke-width="3">';
         if(card.fill === "H") {
@@ -65,8 +71,8 @@ const drawCard = function(deck){
     board.push(newCard);
     return newCard;
 };
-let board = [];
 
+let board = [];
 const makeBoard = function(){
     $("#table").html("");
     while(board.length<12){
@@ -75,6 +81,7 @@ const makeBoard = function(){
 };
 const isMatch = function(set){
     let data = [[],[],[],[]];
+    //builds an array of arrays to store card data for each type of data
     set.forEach(function(type) {
         data[0].push(type.data("color"));
         data[1].push(type.data("fill"));
@@ -82,16 +89,17 @@ const isMatch = function(set){
         data[3].push(type.data("shape"));
     });
     let sameOrDiff = true;
+    // tests to see if any array within the data array all match or all differ
     data.forEach(function(type) {
-        if (type[0] === type[1] && type[0] === type[2]) {
-        } else if (type[0] !== type[1] && type[0] !== type[2] && type[1] !== type[2]) {
+        if (type[0] === type[1] && type[0] === type[2]) { // if all match
+        } else if (type[0] !== type[1] && type[0] !== type[2] && type[1] !== type[2]) { // if all differ
         } else {
             sameOrDiff = false;
         }
     });
     return sameOrDiff;
 };
-
+// tests the 3 current cards to see if they are a correct match
 const testSet = function(){
     setTimeout(function(){
         if(isMatch(selected)){
@@ -107,6 +115,7 @@ const testSet = function(){
                     }
                 });
             });
+            // clears out old hint tracking data
             selected = [];
             hintarr = [];
             hintcount = 0;
@@ -130,11 +139,14 @@ $("#add3").on("click",function(){
 
 let hintarr = [];
 let hintcount = 0;
+// looks at the board array to find a matching set and give a hint to the player
 const hint = function(){
     if(hintarr.length === 0) {
+    // iterates through the board array and tests all possible sets till it finds a match then adds that set to the "hintarr" for further refrence
         for (let a = 0; a < board.length; a++) {
             for (let b = 0; b < board.length; b++) {
                 for (let c = 0; c < board.length; c++) {
+                //makes sure to not count tests that involve duplicates // could be optimized in the future to not test these at all
                     if (isMatch([board[a], board[b], board[c]]) && (board[a] !== board[b]) && (board[a] !== board[c]) && (board[b] !== board[c])) {
                         hintarr = [board[a], board[b], board[c]];
                         let id = "#"+hintarr[hintcount].attr("id");
@@ -145,10 +157,12 @@ const hint = function(){
                 }
             }
         }
-        if(hintarr.length ===0){
+        // if no possible sets are found it will automatically invoke the draw3 function
+        if(hintarr.length === 0){
             draw3(Deck);
         }
     }else{
+    //does nothing if 3 cards are currently highlighted with hints
         if(hintcount > 2){
         }else {
             let id= "#"+hintarr[hintcount].attr("id");
@@ -179,4 +193,4 @@ $("#table").on("click",".card",function(){
     }
 });
 
-})();
+//})();
